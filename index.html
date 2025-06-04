@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>dani</title>
+    <!-- Incluye Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Estilos Generales */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #000;
+            color: #f0f0f0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            margin: 0;
+            padding: 0;
+            padding-bottom: 6rem; /* Espacio para el reproductor fijo */
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1rem;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Estilos de Tarjetas de Demo */
+        .demo-card {
+            transition: box-shadow 0.2s ease-in-out;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+            border: 2px solid transparent;
+            background-color: #1a1a1a;
+        }
+        .demo-card:hover {
+            transform: none;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+        .demo-card.playing {
+            border-color: #cccccc;
+        }
+
+        /* Estilos del Reproductor Global */
+        #global-player {
+            background-color: #111;
+            border-top: 1px solid #333;
+        }
+
+        /* Estilos de Sliders (Progreso y Volumen) */
+        input[type="range"] {
+            -webkit-appearance: none;
+            appearance: none;
+            height: 4px;
+            background: #444;
+            outline: none;
+            opacity: 0.8;
+            transition: opacity .2s;
+        }
+        input[type="range"]:hover {
+            opacity: 1;
+        }
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: #ccc;
+            cursor: pointer;
+            box-shadow: 0 0 2px rgba(0, 0, 0, 0.5);
+        }
+        input[type="range"]::-moz-range-thumb {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: #ccc;
+            cursor: pointer;
+            box-shadow: 0 0 2px rgba(0, 0, 0, 0.5);
+        }
+
+        /* Estilo para Botones de Control */
+        #player-play-pause {
+            color: #f0f0f0;
+        }
+
+        /* Estilo para elementos deshabilitados */
+        #player-play-pause:disabled,
+        #player-progress:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body class="antialiased">
+    <div class="container">
+        <!-- Encabezado -->
+        <header class="w-full py-4 px-2 md:px-0">
+            <h1 class="text-3xl font-bold text-gray-100">dani</h1>
+        </header>
+
+        <!-- Contenido Principal: Demos de Música -->
+        <main class="flex-grow py-8">
+            <h2 class="text-xl font-semibold mb-6 text-gray-300">Selecciona una canción</h2>
+            <div id="demos-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                <!-- Demo de música: Sinergia -->
+                <!-- Para agregar una nueva canción:
+                     1. Guarda tu archivo de audio (ej. demos/nueva_cancion.mp3)
+                     2. Guarda la imagen de portada (ej. imagenes/nueva_cancion.jpg)
+                     3. Duplica este bloque div y actualiza 'data-audio-src', 'data-cover-src', 'img src', 'h3' y 'p'.
+                -->
+                <div class="demo-card rounded-lg overflow-hidden cursor-pointer"
+                data-audio-src="demos/rubik.mp3"
+                data-cover-src="imagenes/rubik.JPG">
+               <img src="imagenes/rubik.JPG" alt="melon" class="w-full h-48 object-cover rounded-t-lg">
+               <div class="p-4">
+                   <h3 class="text-lg font-semibold text-gray-100 mb-1">rubik</h3>
+               </div>
+               </div>
+                <div class="demo-card rounded-lg overflow-hidden cursor-pointer"
+                     data-audio-src="demos/sinergia.mp3"
+                     data-cover-src="imagenes/sinergia.jpg">
+                    <img src="imagenes/sinergia.jpg" alt="Portada de Sinergia" class="w-full h-48 object-cover rounded-t-lg">
+                    <div class="p-4">
+                        <h3 class="text-lg font-semibold text-gray-100 mb-1">sinergia</h3>
+                    </div>
+                </div>
+
+               
+
+            </div>
+        </main>
+
+        <!-- Pie de página -->
+        <footer class="w-full py-4 text-center text-gray-500 text-sm mt-8">
+            <p>2025 dani.</p>
+        </footer>
+    </div>
+
+    <!-- Reproductor de música global fijo en la parte inferior -->
+    <div id="global-player" class="fixed bottom-0 left-0 w-full p-4 flex flex-col md:flex-row items-center justify-between z-50 rounded-t-lg shadow-lg">
+        <div class="flex items-center space-x-4 mb-4 md:mb-0 w-full md:w-auto justify-center md:justify-start">
+            <img id="player-cover" src="https://placehold.co/50x50/000000/FFFFFF?text=Portada" alt="Portada de la canción" class="w-12 h-12 rounded-md object-cover">
+            <div>
+                <h4 id="player-title" class="text-gray-100 font-semibold text-center md:text-left">Ninguna canción seleccionada</h4>
+            </div>
+        </div>
+        <div class="flex items-center space-x-4 w-full md:w-auto justify-center">
+            <button id="player-play-pause" class="text-3xl focus:outline-none" disabled>
+                ▶
+            </button>
+            <span id="player-current-time" class="text-gray-400 text-sm w-12 text-right">0:00</span>
+            <input type="range" id="player-progress" value="0" min="0" max="100" class="flex-grow h-1 rounded-lg appearance-none cursor-pointer mx-2" disabled>
+            <span id="player-duration" class="text-gray-400 text-sm w-12">0:00</span>
+            <input type="range" id="player-volume" value="100" min="0" max="100" class="w-24 h-1 rounded-lg appearance-none cursor-pointer ml-4">
+        </div>
+    </div>
+
+    <audio id="global-audio" src="" preload="auto"></audio>
+
+    <script>
+        // Elementos del DOM
+        const globalAudio = document.getElementById('global-audio');
+        const playerPlayPauseButton = document.getElementById('player-play-pause');
+        const playerProgress = document.getElementById('player-progress');
+        const playerCurrentTime = document.getElementById('player-current-time');
+        const playerDuration = document.getElementById('player-duration');
+        const playerVolume = document.getElementById('player-volume');
+        const playerTitle = document.getElementById('player-title');
+        const playerCover = document.getElementById('player-cover');
+
+        let currentPlayingCard = null; // Para rastrear la tarjeta de la canción actual
+
+        // Función para formatear el tiempo (minutos:segundos)
+        function formatTime(seconds) {
+            const minutes = Math.floor(seconds / 60);
+            const secs = Math.floor(seconds % 60);
+            return `${minutes}:${secs < 10 ? '0' : ''}${secs}`;
+        }
+
+        // --- Configuración inicial del reproductor ---
+        // Deshabilitar controles al inicio, ya que no hay canción seleccionada
+        playerPlayPauseButton.disabled = true;
+        playerProgress.disabled = true;
+        playerVolume.value = globalAudio.volume * 100; // Sincronizar slider de volumen con el audio
+
+        // Event Listeners del Reproductor Global
+        playerPlayPauseButton.addEventListener('click', () => {
+            if (globalAudio.paused) {
+                globalAudio.play();
+            } else {
+                globalAudio.pause();
+            }
+        });
+
+        globalAudio.addEventListener('play', () => {
+            playerPlayPauseButton.textContent = '⏸'; // Icono de pausa
+        });
+        globalAudio.addEventListener('pause', () => {
+            playerPlayPauseButton.textContent = '▶'; // Icono de reproducción
+        });
+
+        globalAudio.addEventListener('timeupdate', () => {
+            const progress = (globalAudio.currentTime / globalAudio.duration) * 100;
+            playerProgress.value = isNaN(progress) ? 0 : progress;
+            playerCurrentTime.textContent = formatTime(globalAudio.currentTime);
+        });
+
+        globalAudio.addEventListener('loadedmetadata', () => {
+            playerDuration.textContent = formatTime(globalAudio.duration);
+            playerProgress.max = 100;
+        });
+
+        playerProgress.addEventListener('input', () => {
+            const seekTime = (playerProgress.value / 100) * globalAudio.duration;
+            globalAudio.currentTime = seekTime;
+        });
+
+        playerVolume.addEventListener('input', () => {
+            globalAudio.volume = playerVolume.value / 100;
+        });
+
+        // Cuando la canción termina
+        globalAudio.addEventListener('ended', () => {
+            globalAudio.pause();
+            playerPlayPauseButton.textContent = '▶';
+            playerProgress.value = 0;
+            playerCurrentTime.textContent = '0:00';
+            playerDuration.textContent = '0:00';
+
+            playerTitle.textContent = 'Ninguna canción seleccionada';
+            playerCover.src = "https://placehold.co/50x50/000000/FFFFFF?text=Portada";
+
+            // Deshabilitar controles de reproducción y progreso
+            playerPlayPauseButton.disabled = true;
+            playerProgress.disabled = true;
+
+            if (currentPlayingCard) {
+                currentPlayingCard.classList.remove('playing');
+                currentPlayingCard = null;
+            }
+        });
+
+        // Manejo de Clics en Tarjetas de Demo
+        document.querySelectorAll('.demo-card').forEach(card => {
+            card.addEventListener('click', () => {
+                const audioSrc = card.getAttribute('data-audio-src');
+                const songTitle = card.querySelector('h3').textContent;
+                const coverSrc = card.getAttribute('data-cover-src');
+
+                if (audioSrc) {
+                    // Eliminar resaltado de la tarjeta anterior
+                    if (currentPlayingCard) {
+                        currentPlayingCard.classList.remove('playing');
+                    }
+                    // Añadir resaltado a la tarjeta actual
+                    card.classList.add('playing');
+                    currentPlayingCard = card;
+
+                    globalAudio.src = audioSrc;
+                    playerTitle.textContent = songTitle;
+                    playerCover.src = coverSrc;
+                    globalAudio.play();
+
+                    // Habilitar controles de reproducción y progreso
+                    playerPlayPauseButton.disabled = false;
+                    playerProgress.disabled = false;
+                }
+            });
+        });
+    </script>
+</body>
+</html>
