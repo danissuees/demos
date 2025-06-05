@@ -113,6 +113,15 @@
                      3. Duplica este bloque div y actualiza 'data-audio-src', 'data-cover-src', 'img src', 'h3' y 'p'.
                 -->
                 <div class="demo-card rounded-lg overflow-hidden cursor-pointer"
+                data-audio-src="demos/ruedosinprisa.mp3"
+                data-cover-src="imagenes/ruedosinprisa.JPG">
+               <img src="imagenes/ruedosinprisa.JPG" alt="melon" class="w-full h-48 object-cover rounded-t-lg">
+               <div class="p-4">
+                   <h3 class="text-lg font-semibold text-gray-100 mb-1">ruedo sin prisa</h3>
+               </div>
+               </div>
+                
+                <div class="demo-card rounded-lg overflow-hidden cursor-pointer"
                 data-audio-src="demos/rubik.mp3"
                 data-cover-src="imagenes/rubik.JPG">
                <img src="imagenes/rubik.JPG" alt="melon" class="w-full h-48 object-cover rounded-t-lg">
@@ -120,6 +129,7 @@
                    <h3 class="text-lg font-semibold text-gray-100 mb-1">rubik</h3>
                </div>
                </div>
+
                 <div class="demo-card rounded-lg overflow-hidden cursor-pointer"
                      data-audio-src="demos/sinergia.mp3"
                      data-cover-src="imagenes/sinergia.JPG">
@@ -145,7 +155,7 @@
         <div class="flex items-center space-x-4 mb-4 md:mb-0 w-full md:w-auto justify-center md:justify-start">
             <img id="player-cover" src="imagenes/giphy.gif" alt="Portada de la canción" class="w-12 h-12 rounded-md object-cover">
             <div>
-                <h4 id="player-title" class="text-gray-100 font-semibold text-center md:text-left">Ninguna canción seleccionada</h4>
+                <h4 id="player-title" class="text-gray-100 font-semibold text-center md:text-left">nada</h4>
             </div>
         </div>
         <div class="flex items-center space-x-4 w-full md:w-auto justify-center">
@@ -231,7 +241,7 @@
             playerCurrentTime.textContent = '0:00';
             playerDuration.textContent = '0:00';
 
-            playerTitle.textContent = 'Ninguna canción seleccionada';
+            playerTitle.textContent = 'nada';
             playerCover.src = "imagenes/giphy.gif"; // Imagen por defecto
 
             // Deshabilitar controles de reproducción y progreso
